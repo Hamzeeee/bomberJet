@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="0618aa0a-969e-4675-87bf-f058ef9dce3f" name="hamze">
+        <fileTransfer rootFolder="/home/hamze/minecraft-server" accessType="SFTP" host="192.168.0.19" port="22" sshConfigId="d59db9f0-a1d8-4e94-b05e-4419bd398b7e" sshConfig="hamze@192.168.0.19:22 agent" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
