@@ -2,39 +2,30 @@ package io.hamza.github.listener;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.hamza.github.main.Main;
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import org.bukkit.Bukkit;
+import io.hamza.github.utilities.WorldUtilitie;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-public class ArmorListener implements org.bukkit.event.Listener {
+public class BomberListener implements org.bukkit.event.Listener {
 
     private final Main plugin;
     private final HashMap<Player, Location> playerLocationHashMap;
     private final HashMap<Player, Boolean> isWearingElytra;
     private final HashMap<Player, Long> playerLastTimeHashMap;
-    private final HashMap<Player, Short> flyingSpeedHashMap;
+    private final HashMap<Player, Integer> flyingSpeedHashMap;
 
 
-    public ArmorListener(Main plugin) {
+    public BomberListener(Main plugin) {
         this.plugin = plugin;
         this.playerLocationHashMap = new HashMap<>();
         this.playerLastTimeHashMap = new HashMap<>();
@@ -76,7 +67,7 @@ public class ArmorListener implements org.bukkit.event.Listener {
             isWearingElytra.put(event.getPlayer(), false);
         }
 
-        if (isWearingElytra.get(player) && player.isGliding() && flyingSpeedHashMap.get(player) >= 25) {
+        if (isWearingElytra.get(player) && player.isGliding() && flyingSpeedHashMap.get(player) >= 22) {
             player.getWorld().spawnEntity(player.getLocation(), EntityType.ARROW);
             debug++;
             player.sendMessage(debug + "");
@@ -85,27 +76,17 @@ public class ArmorListener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void checkBlocksPerSecond(PlayerMoveEvent event) {
+        WorldUtilitie worldUtilitie = new WorldUtilitie();
         Player player = event.getPlayer();
-
         Location location = player.getLocation();
 
         long currentTime = System.currentTimeMillis() + 1000;
 
-        if (playerLocationHashMap.containsKey(player) && playerLastTimeHashMap.containsKey(player)) {
+        double bps = worldUtilitie.blocksPerSecond(player, location, currentTime,
+                playerLocationHashMap, playerLastTimeHashMap, flyingSpeedHashMap);
 
-            if (System.currentTimeMillis() >= playerLastTimeHashMap.get(player)) {
-                double distance = (location.distance(playerLocationHashMap.get(player)));
-
-                player.sendMessage(distance + "B/s");
-                playerLastTimeHashMap.put(player, currentTime);
-                playerLocationHashMap.put(player, location);
-
-                flyingSpeedHashMap.put(player, (short) distance);
-            }
-
-        } else {
-            playerLocationHashMap.put(player, location);
-            playerLastTimeHashMap.put(player, currentTime);
+        if (bps != -1) {
+            player.sendMessage(bps + "B/s");
         }
     }
 
