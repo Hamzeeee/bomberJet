@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
-public class WorldUtilitie {
+public class WorldUtility {
     public double blocksPerSecond(Player player, Location location, long timePeriod, HashMap<Player, Location> playerLocationHashMap,
                                   HashMap<Player, Long> playerLastTimeHashMap, HashMap<Player, Integer> flyingSpeedHashMap) {
 
